@@ -11,8 +11,9 @@ public class Floor : MonoBehaviour
         _tilemap = GetComponent<Tilemap>();
     }
 
-    public bool IsValidTile(Vector3Int tile)
+    public bool IsValidTile(Vector2Int cellPosition)
     {
-        return _tilemap.GetTile(tile) != null;
+        var tilePosition = new Vector3Int(cellPosition.x, cellPosition.y, 0);
+        return _tilemap.GetTile(tilePosition) != null;
     }
 }
