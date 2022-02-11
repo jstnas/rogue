@@ -1333,6 +1333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13e0114af5294b743a2d3551d46bb29b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 16
   grid: {fileID: 1240813205}
   floor: {fileID: 2143098575}
 --- !u!1 &2143098571
