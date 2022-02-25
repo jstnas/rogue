@@ -4,23 +4,25 @@ public class PlayerMovement : Movement
 {
     protected override void Update()
     {
-        Move();
         base.Update();
+        // only move on keypress
+        var newDirection = GetDirection();
+        if (newDirection == null)
+            return;
+        Direction = (Direction) newDirection;
+        Move();
     }
 
-    protected override void Move()
+    private static Direction? GetDirection()
     {
-        // Get input.
         if (Input.GetKeyDown(KeyCode.W))
-            direction = Direction.Up;
-        else if (Input.GetKeyDown(KeyCode.A))
-            direction = Direction.Left;
-        else if (Input.GetKeyDown(KeyCode.S))
-            direction = Direction.Down;
-        else if (Input.GetKeyDown(KeyCode.D))
-            direction = Direction.Right;
-        else
-            return;
-        base.Move();
+            return Direction.Up;
+        if (Input.GetKeyDown(KeyCode.A))
+            return Direction.Left;
+        if (Input.GetKeyDown(KeyCode.S))
+            return Direction.Down;
+        if (Input.GetKeyDown(KeyCode.D))
+            return Direction.Right;
+        return null;
     }
 }

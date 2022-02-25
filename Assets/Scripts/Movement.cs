@@ -5,46 +5,64 @@ using UnityEngine.Tilemaps;
 public enum Direction
 {
     Up,
-    Down,
     Left,
+    Down,
     Right,
 }
 
+public delegate void MoveDelegate();
+
 public class Movement : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private Grid grid;
-    [SerializeField] private Floor floor;
-    protected Direction direction;
-    private Vector2Int _position;
+    public MoveDelegate Moved;
+    protected Direction Direction = Direction.Up;
+    private const float Speed = 16f;
+    private static readonly Vector3Int[] Offsets = {
+        Vector3Int.up,
+        Vector3Int.left,
+        Vector3Int.down,
+        Vector3Int.right,
+    };
+    private Grid _grid;
+    private Ground _ground;
+    private Vector3Int _position;
+
+    public Vector3Int GetCellPosition()
+    {
+        return _position;
+    }
+
+    private void Awake()
+    {
+        _grid = FindObjectOfType<Grid>();
+        _ground = _grid.GetComponent<Ground>();
+    }
+
+    private void Start()
+    {
+        _position = _grid.WorldToCell(transform.position);
+    }
 
     protected virtual void Update()
     {
         Draw();
     }
 
-    protected virtual void Move()
+    public virtual void Move()
     {
-        var offset = direction switch
-        {
-            Direction.Up => Vector2Int.up,
-            Direction.Down => Vector2Int.down,
-            Direction.Left => Vector2Int.left,
-            Direction.Right => Vector2Int.right,
-            _ => throw new ArgumentOutOfRangeException()
-        };
+        var offset = Offsets[Convert.ToInt32(Direction)];
         var newPosition = _position + offset;
-        if (!floor.IsValidTile(newPosition))
+        // skip if can't move to tile
+        if (!_ground.IsValidTile(newPosition))
             return;
         _position = newPosition;
+        Moved?.Invoke();
     }
 
     private void Draw()
     {
+        var targetPosition = _grid.CellToWorld(_position) + _grid.cellSize / 2;
         var t = transform;
-        var cellSize = grid.cellSize;
-        var halfCell = cellSize / 2;
-        var targetPosition = new Vector3(_position.x * cellSize.x + halfCell.x, _position.y * cellSize.y + halfCell.y, 0);
-        t.position = Vector3.Lerp(t.position, targetPosition, speed * Time.deltaTime);
+        t.position = Vector3.Lerp(t.position, targetPosition, Speed * Time.deltaTime);
     }
 }
