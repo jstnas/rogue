@@ -11,6 +11,12 @@ public class Ground : MonoBehaviour
     private List<Movement> _enemyList;
     private PlayerMovement _player;
 
+    public List<Movement> GetEnemyList()
+    {
+        return _enemyList;
+    }
+
+    
     private void Awake()
     {
         _enemies = FindObjectOfType<Enemies>();
@@ -63,4 +69,5 @@ public class Ground : MonoBehaviour
         }
         return true;
     }
+
 }
