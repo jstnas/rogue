@@ -16,6 +16,12 @@ public class Ground : MonoBehaviour
         return _enemyList;
     }
 
+    public PlayerMovement GetPlayer()
+    {
+        return _player;
+    }
+
+
     
     private void Awake()
     {

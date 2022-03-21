@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Character: MonoBehaviour
-{
+{                                                                                                                                                                                                                                                                                                                                                                                                          
 
     public int Health = 100;
     public int Attack_Range = 1;
     public int Damage = 50;
-    private Ground _ground;
+    protected static Ground _ground;
     private Grid _grid;
-    private Movement _myMovement;
+    protected Movement _myMovement;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,7 +56,13 @@ public class Character: MonoBehaviour
         }
         else
         {
-
+            PlayerMovement _Player = _ground.GetPlayer();
+            if (Vector3.Distance(_myMovement.GetCellPosition(),_Player.GetCellPosition()) <= Attack_Range)
+            {
+                Character player = _Player.GetComponent<Character>();
+                player.Health -= Damage;
+                print("check 3");
+            }
         }
     }
 }
