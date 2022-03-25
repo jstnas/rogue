@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public enum Direction
 {
@@ -10,12 +9,12 @@ public enum Direction
     Right,
 }
 
-public delegate void MoveDelegate();
+public delegate void MovementFinished();
 
-public class Movement : MonoBehaviour
+public sealed class Movement : MonoBehaviour
 {
-    public MoveDelegate Moved;
-    protected Direction Direction = Direction.Up;
+    public event MovementFinished OnMovementFinished;
+    private const float DistanceThreshold = 0.1f;
     private const float Speed = 16f;
     private static readonly Vector3Int[] Offsets = {
         Vector3Int.up,
@@ -24,8 +23,9 @@ public class Movement : MonoBehaviour
         Vector3Int.right,
     };
     private Grid _grid;
-    private Ground _ground;
+    private Floor _floor;
     private Vector3Int _position;
+    private bool _moving;
 
     public Vector3Int GetCellPosition()
     {
@@ -35,7 +35,7 @@ public class Movement : MonoBehaviour
     private void Awake()
     {
         _grid = FindObjectOfType<Grid>();
-        _ground = _grid.GetComponent<Ground>();
+        _floor = _grid.GetComponent<Floor>();
     }
 
     private void Start()
@@ -43,26 +43,42 @@ public class Movement : MonoBehaviour
         _position = _grid.WorldToCell(transform.position);
     }
 
-    protected virtual void Update()
+    private void Update()
     {
-        Draw();
-    }
-
-    public virtual void Move()
-    {
-        var offset = Offsets[Convert.ToInt32(Direction)];
-        var newPosition = _position + offset;
-        // skip if can't move to tile
-        if (!_ground.IsValidTile(newPosition))
+        // skip if not moving
+        if (!_moving)
             return;
-        _position = newPosition;
-        Moved?.Invoke();
+        // calculate new position
+        var targetPosition = _grid.CellToWorld(_position) + _grid.cellSize / 2;
+        var position = transform.position;
+        position = Vector3.Lerp(position, targetPosition, Speed * Time.deltaTime);
+        // check if close enough to the target position
+        var distance = Vector3.Distance(position, targetPosition);
+        if (distance <= DistanceThreshold)
+        {
+            position = targetPosition;
+            _moving = false;
+            OnMovementFinished?.Invoke();
+        }
+        // update position
+        transform.position = position;
     }
 
-    private void Draw()
+    public void Move(Direction direction)
     {
-        var targetPosition = _grid.CellToWorld(_position) + _grid.cellSize / 2;
-        var t = transform;
-        t.position = Vector3.Lerp(t.position, targetPosition, Speed * Time.deltaTime);
+        var newPosition = GetOffsetPosition(direction);
+        // skip if can't move to tile
+        if (!_floor.IsValidTile(newPosition))
+        {
+            OnMovementFinished?.Invoke();
+            return;
+        }
+        _position = newPosition;
+        _moving = true;
+    }
+
+    public Vector3Int GetOffsetPosition(Direction direction)
+    {
+        return _position + Offsets[Convert.ToInt32(direction)];
     }
 }
