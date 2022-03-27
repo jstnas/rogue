@@ -4,19 +4,8 @@ using UnityEngine;
 
 public class Entities : MonoBehaviour
 {
-    private int _currentEntity;
     private readonly List<Entity> _entities = new List<Entity>();
-
-    [CanBeNull]
-    public Entity GetEntity(Vector3Int cellPosition)
-    {
-        foreach (var entity in _entities)
-        {
-            if (entity.GetComponent<Movement>().GetCellPosition() == cellPosition)
-                return entity;
-        }
-        return null;
-    }
+    private int _currentEntity;
 
     private void Start()
     {
@@ -28,8 +17,18 @@ public class Entities : MonoBehaviour
             entity.TurnEndedEvent += EntityTurnEndedEvent;
             entity.GetComponent<Health>().DeathEvent += OnEntityDeath;
         }
+
         // let the first entity take its turn
         _entities[0].OnTurn();
+    }
+
+    [CanBeNull]
+    public Entity GetEntity(Vector3Int cellPosition)
+    {
+        foreach (var entity in _entities)
+            if (entity.GetComponent<Movement>().GetCellPosition() == cellPosition)
+                return entity;
+        return null;
     }
 
     private void OnEntityDeath(Entity entity)
