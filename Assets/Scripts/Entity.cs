@@ -1,20 +1,23 @@
 using UnityEngine;
 
-public delegate void TurnEnded();
+public delegate void TurnEndedDelegate();
 
 public class Entity : MonoBehaviour
 {
-    public event TurnEnded OnTurnEnded;
+    [SerializeField] protected int damage;
+    public event TurnEndedDelegate TurnEndedEvent;
+    protected Combat Combat;
     protected Entities Entities;
     protected Floor Floor;
     protected Movement Movement;
 
     protected virtual void Awake()
     {
+        Combat = GetComponent<Combat>();
         Entities = FindObjectOfType<Entities>();
         Floor = FindObjectOfType<Floor>();
         Movement = GetComponent<Movement>();
-        Movement.OnMovementFinished += OnMovementFinished;
+        Movement.MovementFinishedEvent += OnMovementFinished;
     }
 
     private void OnMovementFinished()
@@ -27,8 +30,8 @@ public class Entity : MonoBehaviour
         print($"<color=yellow>{name}</color> is starting their turn");
     }
 
-    protected virtual void EndTurn()
+    protected void EndTurn()
     {
-        OnTurnEnded?.Invoke();
+        TurnEndedEvent?.Invoke();
     }
 }

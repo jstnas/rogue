@@ -1,7 +1,10 @@
 using UnityEngine;
 
+public delegate void DeathDelegate(Entity entity);
+
 public class Health : MonoBehaviour
 {
+    public event DeathDelegate DeathEvent;
     [SerializeField] private int maxHealth = 1;
     private int _health;
 
@@ -23,7 +26,8 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
-        print($"{name} has died");
+        print($"<color=yellow>{name}</color> has died");
+        DeathEvent?.Invoke(GetComponent<Entity>());
         // destroy self
         Destroy(gameObject);
     }

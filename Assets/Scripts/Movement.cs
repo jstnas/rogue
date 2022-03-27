@@ -9,11 +9,11 @@ public enum Direction
     Right,
 }
 
-public delegate void MovementFinished();
+public delegate void MovementFinishedDelegate();
 
 public sealed class Movement : MonoBehaviour
 {
-    public event MovementFinished OnMovementFinished;
+    public event MovementFinishedDelegate MovementFinishedEvent;
     private const float DistanceThreshold = 0.1f;
     private const float Speed = 16f;
     private static readonly Vector3Int[] Offsets = {
@@ -58,7 +58,7 @@ public sealed class Movement : MonoBehaviour
         {
             position = targetPosition;
             _moving = false;
-            OnMovementFinished?.Invoke();
+            MovementFinishedEvent?.Invoke();
         }
         // update position
         transform.position = position;
@@ -70,7 +70,7 @@ public sealed class Movement : MonoBehaviour
         // skip if can't move to tile
         if (!_floor.IsValidTile(newPosition))
         {
-            OnMovementFinished?.Invoke();
+            MovementFinishedEvent?.Invoke();
             return;
         }
         _position = newPosition;

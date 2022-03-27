@@ -25,13 +25,19 @@ public class Entities : MonoBehaviour
         foreach (var entity in entities)
         {
             _entities.Add(entity);
-            entity.OnTurnEnded += OnEntityTurnEnded;
+            entity.TurnEndedEvent += EntityTurnEndedEvent;
+            entity.GetComponent<Health>().DeathEvent += OnEntityDeath;
         }
         // let the first entity take its turn
         _entities[0].OnTurn();
     }
 
-    private void OnEntityTurnEnded()
+    private void OnEntityDeath(Entity entity)
+    {
+        _entities.Remove(entity);
+    }
+
+    private void EntityTurnEndedEvent()
     {
         _currentEntity++;
         _currentEntity %= _entities.Count;

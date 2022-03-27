@@ -25,7 +25,7 @@ public class Player : Entity
         var targetEntity = Entities.GetEntity(newPosition);
         if (targetEntity != null)
         {
-            print($"<color=yellow>{name}</color> is attacking <color=red>{targetEntity.name}</color>");
+            Combat.Attack(targetEntity);
             _checkingInput = false;
             EndTurn();
             return;
