@@ -15,7 +15,7 @@ public class Entities : MonoBehaviour
         {
             _entities.Add(entity);
             entity.TurnEndedEvent += EntityTurnEndedEvent;
-            entity.GetComponent<Health>().DeathEvent += OnEntityDeath;
+            entity.GetComponent<Health>().EntityDied += OnEntityDeath;
         }
 
         // let the first entity take its turn

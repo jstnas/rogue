@@ -6,31 +6,28 @@ public enum Direction
     Up,
     Left,
     Down,
-    Right,
+    Right
 }
 
-public delegate void MovementFinishedDelegate();
+public delegate void FinishedMovement();
 
 public sealed class Movement : MonoBehaviour
 {
-    public event MovementFinishedDelegate MovementFinishedEvent;
     private const float DistanceThreshold = 0.1f;
     private const float Speed = 16f;
-    private static readonly Vector3Int[] Offsets = {
+
+    private static readonly Vector3Int[] Offsets =
+    {
         Vector3Int.up,
         Vector3Int.left,
         Vector3Int.down,
-        Vector3Int.right,
+        Vector3Int.right
     };
-    private Grid _grid;
-    private Floor _floor;
-    private Vector3Int _position;
-    private bool _moving;
 
-    public Vector3Int GetCellPosition()
-    {
-        return _position;
-    }
+    private Floor _floor;
+    private Grid _grid;
+    private bool _moving;
+    private Vector3Int _position;
 
     private void Awake()
     {
@@ -58,10 +55,18 @@ public sealed class Movement : MonoBehaviour
         {
             position = targetPosition;
             _moving = false;
-            MovementFinishedEvent?.Invoke();
+            FinishedMovement?.Invoke();
         }
+
         // update position
         transform.position = position;
+    }
+
+    public event FinishedMovement FinishedMovement;
+
+    public Vector3Int GetCellPosition()
+    {
+        return _position;
     }
 
     public void Move(Direction direction)
@@ -70,9 +75,10 @@ public sealed class Movement : MonoBehaviour
         // skip if can't move to tile
         if (!_floor.IsValidTile(newPosition))
         {
-            MovementFinishedEvent?.Invoke();
+            FinishedMovement?.Invoke();
             return;
         }
+
         _position = newPosition;
         _moving = true;
     }

@@ -5,12 +5,6 @@ public class Player : Entity
     // keeps track of when to check for input
     private bool _checkingInput;
 
-    public override void OnTurn()
-    {
-        _checkingInput = true;
-        base.OnTurn();
-    }
-
     private void Update()
     {
         // skip if not checking input
@@ -30,11 +24,18 @@ public class Player : Entity
             EndTurn();
             return;
         }
+
         // skip if can't move to new position
         if (!Floor.IsValidTile(newPosition))
             return;
         Movement.Move(newDirection.Value);
         _checkingInput = false;
+    }
+
+    public override void OnTurn()
+    {
+        _checkingInput = true;
+        base.OnTurn();
     }
 
     private static Direction? GetDirection()

@@ -17,10 +17,10 @@ public class Entity : MonoBehaviour
         Entities = FindObjectOfType<Entities>();
         Floor = FindObjectOfType<Floor>();
         Movement = GetComponent<Movement>();
-        Movement.MovementFinishedEvent += OnMovementFinished;
+        Movement.FinishedMovement += OnFinishedMovementFinished;
     }
 
-    private void OnMovementFinished()
+    private void OnFinishedMovementFinished()
     {
         EndTurn();
     }
