@@ -14,8 +14,8 @@ public class Entities : MonoBehaviour
         foreach (var entity in entities)
         {
             _entities.Add(entity);
-            entity.TurnEndedEvent += EntityTurnEndedEvent;
-            entity.GetComponent<Health>().EntityDied += OnEntityDeath;
+            entity.TurnEnded += OnTurnEnded;
+            entity.EntityDied += OnEntityDeath;
         }
 
         // let the first entity take its turn
@@ -26,7 +26,7 @@ public class Entities : MonoBehaviour
     public Entity GetEntity(Vector3Int cellPosition)
     {
         foreach (var entity in _entities)
-            if (entity.GetComponent<Movement>().GetCellPosition() == cellPosition)
+            if (entity.GetCellPosition() == cellPosition)
                 return entity;
         return null;
     }
@@ -36,7 +36,7 @@ public class Entities : MonoBehaviour
         _entities.Remove(entity);
     }
 
-    private void EntityTurnEndedEvent()
+    private void OnTurnEnded()
     {
         _currentEntity++;
         _currentEntity %= _entities.Count;

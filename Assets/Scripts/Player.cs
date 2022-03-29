@@ -4,50 +4,58 @@ public class Player : Entity
 {
     // keeps track of when to check for input
     private bool _checkingInput;
+    private Floor _floor;
 
-    private void Update()
+    protected override void Awake()
     {
+        base.Awake();
+        _floor = FindObjectOfType<Floor>();
+        MovementEnded += EndTurn;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
         // skip if not checking input
         if (!_checkingInput)
             return;
-        var newDirection = GetDirection();
+        var newOffset = GetOffset();
         // skip if no key was pressed
-        if (newDirection is null)
+        if (newOffset is null)
             return;
-        var newPosition = Movement.GetOffsetPosition(newDirection.Value);
+        var newPosition = GetCellPosition() + newOffset.Value;
         // check if can attack entity at new position
         var targetEntity = Entities.GetEntity(newPosition);
         if (targetEntity != null)
         {
-            Combat.Attack(targetEntity);
+            Attack(targetEntity);
             _checkingInput = false;
             EndTurn();
             return;
         }
-
         // skip if can't move to new position
-        if (!Floor.IsValidTile(newPosition))
+        if (!_floor.IsValidTile(newPosition))
             return;
-        Movement.Move(newDirection.Value);
+        MoveTo(newPosition);
         _checkingInput = false;
     }
 
     public override void OnTurn()
     {
-        _checkingInput = true;
         base.OnTurn();
+        _checkingInput = true;
     }
 
-    private static Direction? GetDirection()
+    private static Vector3Int? GetOffset()
     {
         if (Input.GetKeyDown(KeyCode.W))
-            return Direction.Up;
+            return Vector3Int.up;
         if (Input.GetKeyDown(KeyCode.A))
-            return Direction.Left;
+            return Vector3Int.left;
         if (Input.GetKeyDown(KeyCode.S))
-            return Direction.Down;
+            return Vector3Int.down;
         if (Input.GetKeyDown(KeyCode.D))
-            return Direction.Right;
+            return Vector3Int.right;
         return null;
     }
 }

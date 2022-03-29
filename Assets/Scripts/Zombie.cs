@@ -1,56 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using UnityEngine;
+using Random = System.Random;
 
 public class Zombie : Entity
 {
+    [SerializeField] private int seed;
+    private Floor _floor;
+
+    private Vector3Int[] _offsets =
+    {
+        Vector3Int.up,
+        Vector3Int.left,
+        Vector3Int.down,
+        Vector3Int.right
+    };
+
+    private Random _random;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _random = new Random(seed);
+        _floor = FindObjectOfType<Floor>();
+        MovementEnded += EndTurn;
+    }
+
     public override void OnTurn()
     {
         base.OnTurn();
         // zombie will try to move in every direction before giving up
-        var directions = GetRandomDirections();
-        Attack(directions);
-        Move(directions);
+        ShuffleOffsets();
+        if (Attack())
+            return;
+        if (Move())
+            return;
         // do nothing
         EndTurn();
     }
 
-    private void Attack(IEnumerable<int> directions)
+    private bool Attack()
     {
-        foreach (var d in directions)
+        foreach (var offset in _offsets)
         {
-            var direction = (Direction) d;
-            var position = Movement.GetOffsetPosition(direction);
+            var position = GetCellPosition() + offset;
             var targetEntity = Entities.GetEntity(position);
             // only target player
             if (targetEntity == null ||
                 !targetEntity.CompareTag("Player"))
                 continue;
-            Combat.Attack(targetEntity);
-            return;
+            Attack(targetEntity);
+            EndTurn();
+            return true;
         }
+        return false;
     }
 
-    private void Move(IEnumerable<int> directions)
+    private bool Move()
     {
-        foreach (var d in directions)
+        foreach (var offset in _offsets)
         {
             // move in a random direction
-            var direction = (Direction) d;
-            var position = Movement.GetOffsetPosition(direction);
+            var position = GetCellPosition() + offset;
             // try next direction if can't move in new direction
-            if (!Floor.IsValidTile(position))
+            if (!_floor.IsValidTile(position))
                 continue;
-            Movement.Move(direction);
-            return;
+            MoveTo(position);
+            return true;
         }
+        return false;
     }
 
-    private static List<int> GetRandomDirections()
+    private void ShuffleOffsets()
     {
-        // initialise
-        int[] directions = {0, 1, 2, 3};
-        var random = new Random();
-        return directions.OrderBy(x => random.Next()).ToList();
+        _offsets = _offsets.OrderBy(x => _random.Next()).ToArray();
     }
 }

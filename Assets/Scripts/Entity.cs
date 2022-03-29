@@ -1,28 +1,37 @@
 using UnityEngine;
 
-public delegate void TurnEndedDelegate();
+public delegate void TurnEnded();
+
+public delegate void MovementEnded();
+
+public delegate void EntityDied(Entity entity);
 
 public class Entity : MonoBehaviour
 {
-    [SerializeField] protected int damage;
-    public event TurnEndedDelegate TurnEndedEvent;
-    protected Combat Combat;
+    private const float DistanceThreshold = 0.1f;
+    private const float Speed = 16f;
+    [SerializeField] private int maxHealth;
+    [SerializeField] private int damage;
     protected Entities Entities;
-    protected Floor Floor;
-    protected Movement Movement;
+    private Grid _grid;
+    private int _health;
+    private bool _moving;
+    private Vector3 _targetPosition;
+    public EntityDied EntityDied;
+    protected MovementEnded MovementEnded;
+    public TurnEnded TurnEnded;
 
     protected virtual void Awake()
     {
-        Combat = GetComponent<Combat>();
         Entities = FindObjectOfType<Entities>();
-        Floor = FindObjectOfType<Floor>();
-        Movement = GetComponent<Movement>();
-        Movement.FinishedMovement += OnFinishedMovementFinished;
+        _grid = FindObjectOfType<Grid>();
+        _health = maxHealth;
+        _targetPosition = _grid.WorldToCell(transform.position);
     }
 
-    private void OnFinishedMovementFinished()
+    protected virtual void Update()
     {
-        EndTurn();
+        UpdatePosition();
     }
 
     public virtual void OnTurn()
@@ -32,6 +41,62 @@ public class Entity : MonoBehaviour
 
     protected void EndTurn()
     {
-        TurnEndedEvent?.Invoke();
+        TurnEnded?.Invoke();
+    }
+
+    protected void Attack(Entity target)
+    {
+        print($"<color=red>{name}</color> is attacking <color=yellow>{target}</color>");
+        target.ChangeHealth(-damage);
+    }
+
+    private void UpdatePosition()
+    {
+        // skip if not moving
+        if (!_moving)
+            return;
+        // calculate new position
+        var position = transform.position;
+        position = Vector3.Lerp(position, _targetPosition, Speed * Time.deltaTime);
+        // stop if close enough to target position
+        var distance = Vector3.Distance(position, _targetPosition);
+        if (distance <= DistanceThreshold)
+        {
+            print($"<color=lime>{name}</color> has finished moving");
+            position = _targetPosition;
+            _moving = false;
+            MovementEnded?.Invoke();
+        }
+
+        // update position
+        transform.position = position;
+    }
+
+    protected void MoveTo(Vector3Int cellPosition)
+    {
+        _targetPosition = _grid.CellToWorld(cellPosition) + _grid.cellSize * 0.5f;
+        _moving = true;
+    }
+
+    private void ChangeHealth(int amount)
+    {
+        _health += amount;
+        // prevent health from going out of bounds
+        _health = Mathf.Clamp(_health, 0, maxHealth);
+        if (_health <= 0)
+            Die();
+    }
+
+    private void Die()
+    {
+        print($"<color=yellow>{name}</color> has died");
+        EntityDied?.Invoke(this);
+        // destroy self
+        Destroy(gameObject);
+    }
+
+    public Vector3Int GetCellPosition()
+    {
+        return _grid.WorldToCell(_targetPosition);
     }
 }

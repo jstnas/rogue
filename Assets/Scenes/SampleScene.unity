@@ -3408,7 +3408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 957821065724475804, guid: 13625856f616a88439216875c4d021c7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.2
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 957821065724475804, guid: 13625856f616a88439216875c4d021c7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3519,7 +3519,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 3993298056032119332, guid: 70633eaa334ab9249a5f5accb1c89577, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5944302522491069615, guid: 70633eaa334ab9249a5f5accb1c89577, type: 3}
+      propertyPath: damage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5944302522491069615, guid: 70633eaa334ab9249a5f5accb1c89577, type: 3}
+      propertyPath: maxHealth
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8842636448538190728, guid: 70633eaa334ab9249a5f5accb1c89577, type: 3}
+    - {fileID: 6082505489710501429, guid: 70633eaa334ab9249a5f5accb1c89577, type: 3}
+    - {fileID: 4372765892183939907, guid: 70633eaa334ab9249a5f5accb1c89577, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 70633eaa334ab9249a5f5accb1c89577, type: 3}
 --- !u!4 &8743575530647442398 stripped
 Transform:

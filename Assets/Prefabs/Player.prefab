@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27c90f8b5da481285f0647943996105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 3
+  damage: 1
 --- !u!1001 &8743575530790512659
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -75,7 +77,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 279277470695984027, guid: 1aca3a1313213a3418a8ae4b7e955f55, type: 3}
+    - {fileID: 3260057588152018470, guid: 1aca3a1313213a3418a8ae4b7e955f55, type: 3}
+    - {fileID: 5041855612938466128, guid: 1aca3a1313213a3418a8ae4b7e955f55, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 1aca3a1313213a3418a8ae4b7e955f55, type: 3}
 --- !u!1 &3993298056032119332 stripped
 GameObject:
