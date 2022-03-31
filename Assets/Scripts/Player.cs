@@ -1,16 +1,37 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : Entity
 {
+    private const float InputThreshold = 0.8f;
+    [SerializeField] private InputActionReference moveAction;
     // keeps track of when to check for input
     private bool _checkingInput;
     private Floor _floor;
+    private Vector2 _input;
 
     protected override void Awake()
     {
         base.Awake();
+        moveAction.action.performed += OnMove;
         _floor = FindObjectOfType<Floor>();
         MovementEnded += EndTurn;
+    }
+
+    private void OnMove(InputAction.CallbackContext obj)
+    {
+        _input = obj.ReadValue<Vector2>();
+        // print(_input); // DEBUG
+    }
+
+    private void OnEnable()
+    {
+        moveAction.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction.action.Disable();
     }
 
     protected override void Update()
@@ -23,6 +44,8 @@ public class Player : Entity
         // skip if no key was pressed
         if (newOffset is null)
             return;
+        // reset input after it has been checked
+        _input = Vector2.zero;
         var newPosition = GetCellPosition() + newOffset.Value;
         // check if can attack entity at new position
         var targetEntity = Entities.GetEntity(newPosition);
@@ -46,15 +69,15 @@ public class Player : Entity
         _checkingInput = true;
     }
 
-    private static Vector3Int? GetOffset()
+    private Vector3Int? GetOffset()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (_input.y > InputThreshold)
             return Vector3Int.up;
-        if (Input.GetKeyDown(KeyCode.A))
+        if (_input.x < -InputThreshold)
             return Vector3Int.left;
-        if (Input.GetKeyDown(KeyCode.S))
+        if (_input.y < -InputThreshold)
             return Vector3Int.down;
-        if (Input.GetKeyDown(KeyCode.D))
+        if (_input.x > InputThreshold)
             return Vector3Int.right;
         return null;
     }
