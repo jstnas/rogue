@@ -28,7 +28,7 @@ namespace Entities
             EntityManager = FindObjectOfType<EntityManager>();
             _grid = FindObjectOfType<Grid>();
             _health = maxHealth;
-            _targetPosition = _grid.WorldToCell(transform.position);
+            _targetPosition = transform.position;
         }
 
         protected virtual void Update()
@@ -38,7 +38,7 @@ namespace Entities
 
         public virtual void OnTurn()
         {
-            print($"<color=yellow>{name}</color> is starting their turn");
+            print($"<color=yellow>{name}</color> at {GetCellPosition()} is starting their turn");
         }
 
         protected void EndTurn()
@@ -64,7 +64,7 @@ namespace Entities
             var distance = Vector3.Distance(position, _targetPosition);
             if (distance <= DistanceThreshold)
             {
-                print($"<color=lime>{name}</color> has finished moving");
+                print($"<color=lime>{name}</color> at {GetCellPosition()} has finished moving");
                 position = _targetPosition;
                 _moving = false;
                 MovementEnded?.Invoke();
