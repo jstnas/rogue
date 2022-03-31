@@ -74,3 +74,4 @@ crashlytics-build.properties
 # Custom
 .idea/
 .vsconfig
+ProjectSettings/RiderScriptEditorPersistedState.asset
