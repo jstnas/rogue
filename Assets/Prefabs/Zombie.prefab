@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 1
   damage: 1
+  healthText: {fileID: 1362172114608561774}
   seed: 0
 --- !u!1001 &4861281605340707757
 PrefabInstance:
@@ -53,3 +54,14 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5637487426522677815, guid: 1aca3a1313213a3418a8ae4b7e955f55, type: 3}
   m_PrefabInstance: {fileID: 4861281605340707757}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1362172114608561774 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5877713799143138755, guid: 1aca3a1313213a3418a8ae4b7e955f55, type: 3}
+  m_PrefabInstance: {fileID: 4861281605340707757}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

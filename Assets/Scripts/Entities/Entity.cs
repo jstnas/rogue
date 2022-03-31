@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Entities
 {
@@ -14,6 +15,7 @@ namespace Entities
         private const float Speed = 16f;
         [SerializeField] private int maxHealth;
         [SerializeField] private int damage;
+        [SerializeField] private Text healthText;
         protected EntityManager EntityManager;
         private Grid _grid;
         private int _health;
@@ -28,6 +30,7 @@ namespace Entities
             EntityManager = FindObjectOfType<EntityManager>();
             _grid = FindObjectOfType<Grid>();
             _health = maxHealth;
+            healthText.text = _health.ToString();
             _targetPosition = transform.position;
         }
 
@@ -85,6 +88,7 @@ namespace Entities
             _health += amount;
             // prevent health from going out of bounds
             _health = Mathf.Clamp(_health, 0, maxHealth);
+            healthText.text = _health.ToString();
             if (_health <= 0)
                 Die();
         }
