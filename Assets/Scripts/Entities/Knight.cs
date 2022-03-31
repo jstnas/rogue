@@ -21,10 +21,20 @@ namespace Entities
             var nextCell = path[0];
             // attack the player if next to them
             var targetEntity = EntityManager.GetEntity(nextCell);
-            if (targetEntity != null && targetEntity.CompareTag("Player"))
+            if (targetEntity != null)
             {
-                Attack(targetEntity);
-                EndTurn();
+                if (targetEntity.CompareTag("Player"))
+                {
+                    Attack(targetEntity);
+                    EndTurn();
+                    return;
+                }
+                // skip turn if path is occupied by another entity
+                else
+                {
+                    EndTurn();
+                    return;
+                }
             }
             // move otherwise
             MoveTo(nextCell);
