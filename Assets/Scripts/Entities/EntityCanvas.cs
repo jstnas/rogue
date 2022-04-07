@@ -1,26 +1,54 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Entities
 {
     public class EntityCanvas : MonoBehaviour
     {
-        private Canvas _canvas;
+        private readonly List<Canvas> _canvasList = new List<Canvas>();
+        [SerializeField] private InputActionReference showAction;
 
         private void Awake()
         {
-            _canvas = GetComponent<Canvas>();
+            GetComponent<EntityManager>().EntitiesUpdated += OnEntitiesUpdated;
+            showAction.action.performed += OnShow;
+            showAction.action.canceled += OnShow;
         }
 
-        public void OnPointerEnter()
+        private void OnEntitiesUpdated(List<Entity> entities)
         {
-            print("Hello");
-            _canvas.enabled = true;
+            // update the list of canvases
+            _canvasList.Clear();
+            foreach (var entity in entities)
+            {
+                _canvasList.Add(entity.GetComponentInChildren<Canvas>());
+            }
         }
 
-        public void OnPointerExit()
+        private void OnEnable()
         {
-            _canvas.enabled = false;
+            showAction.action.Enable();
+        }
+
+        private void OnDisable()
+        {
+            showAction.action.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            showAction.action.performed -= OnShow;
+            showAction.action.canceled -= OnShow;
+        }
+
+        private void OnShow(InputAction.CallbackContext obj)
+        {
+            var show = obj.performed;
+            foreach (var canvas in _canvasList)
+            {
+                canvas.enabled = show;
+            }
         }
     }
 }

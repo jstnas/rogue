@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace Entities
 {
+    public delegate void EntitiesUpdated(List<Entity> entities);
     public class EntityManager : MonoBehaviour
     {
+        public EntitiesUpdated EntitiesUpdated;
         private readonly List<Entity> _entities = new List<Entity>();
         private int _currentEntity;
 
@@ -19,6 +21,7 @@ namespace Entities
                 entity.TurnEnded += OnTurnEnded;
                 entity.EntityDied += OnEntityDeath;
             }
+            EntitiesUpdated?.Invoke(_entities);
 
             // let the first entity take its turn
             _entities[0].OnTurn();
@@ -36,6 +39,7 @@ namespace Entities
         private void OnEntityDeath(Entity entity)
         {
             _entities.Remove(entity);
+            EntitiesUpdated?.Invoke(_entities);
         }
 
         private void OnTurnEnded()
