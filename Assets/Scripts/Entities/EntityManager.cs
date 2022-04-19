@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
+using Ui;
 using UnityEngine;
 
 namespace Entities
@@ -8,8 +10,10 @@ namespace Entities
     public class EntityManager : MonoBehaviour
     {
         public EntitiesUpdated EntitiesUpdated;
+        [SerializeField] private GameOverPanel gameOverPanel;
         private readonly List<Entity> _entities = new List<Entity>();
         private int _currentEntity;
+        private int _playerTurns; // number of turns the player has made
 
         private void Start()
         {
@@ -19,6 +23,8 @@ namespace Entities
             {
                 _entities.Add(entity);
                 entity.TurnEnded += OnTurnEnded;
+                if (entity.CompareTag("Player"))
+                    entity.TurnEnded += TrackTurn;
                 entity.EntityDied += OnEntityDeath;
             }
             EntitiesUpdated?.Invoke(_entities);
@@ -40,6 +46,21 @@ namespace Entities
         {
             _entities.Remove(entity);
             EntitiesUpdated?.Invoke(_entities);
+            // end game if player dies
+            if (entity.CompareTag("Player"))
+            {
+                gameOverPanel.Display(false);
+                print("<color=red>Game over! player died!</color>");
+                Stop();
+            }
+            // end game if only player is left
+            else if (_entities.Count == 1)
+            {
+                gameOverPanel.SetTurns(_playerTurns);
+                gameOverPanel.Display(true);
+                print("<color=green>Game over! player won!</color>");
+                Stop();
+            }
         }
 
         private void OnTurnEnded()
@@ -47,6 +68,19 @@ namespace Entities
             _currentEntity++;
             _currentEntity %= _entities.Count;
             _entities[_currentEntity].OnTurn();
+        }
+
+        private void TrackTurn()
+        {
+            _playerTurns++;
+        }
+
+        private void Stop()
+        {
+            foreach (var entity in _entities)
+            {
+                entity.TurnEnded -= OnTurnEnded;
+            }
         }
     }
 }
