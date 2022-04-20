@@ -184,17 +184,6 @@
                     "action": "ShowHealth",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3f3df243-7b67-4d44-82c9-028534501aca",
-                    "path": "<Keyboard>/c",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "ShowHealth",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }

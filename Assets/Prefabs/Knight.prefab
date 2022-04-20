@@ -29,6 +29,18 @@ MonoBehaviour:
   healthText: {fileID: 1379743975678444741}
   EntityType: 4
   target: {fileID: 0}
+--- !u!114 &827054193718427173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903078003809428273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dda07dc1ef224287b41ed43eb9d8ce58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4806467093121343750
 PrefabInstance:
   m_ObjectHideFlags: 0

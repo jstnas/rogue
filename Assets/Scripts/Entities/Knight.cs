@@ -5,19 +5,20 @@ namespace Entities
 {
     public class Knight : Entity
     {
-        [SerializeField] private Entity target;
+        private Entity _target;
         private Path _path;
         protected override void Awake()
         {
             base.Awake();
             _path = GetComponent<Path>();
+            _target = GameObject.FindWithTag("Player").GetComponent<Entity>();
             MovementEnded += EndTurn;
         }
 
         public override void OnTurn()
         {
             base.OnTurn();
-            var path = _path.GetPath(GetCellPosition(), target.GetCellPosition());
+            var path = _path.GetPath(GetCellPosition(), _target.GetCellPosition());
             var nextCell = path[0];
             // attack the player if next to them
             var targetEntity = EntityManager.GetEntity(nextCell);
