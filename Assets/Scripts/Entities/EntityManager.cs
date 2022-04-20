@@ -82,5 +82,10 @@ namespace Entities
                 entity.TurnEnded -= OnTurnEnded;
             }
         }
+        public List<Entities.Entity> GetEntities()
+        {
+            return _entities;
+        }
+
     }
 }
