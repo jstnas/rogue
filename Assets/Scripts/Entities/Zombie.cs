@@ -7,40 +7,23 @@ namespace Entities
     public class Zombie : Entity
     {
         [SerializeField] private int seed;
-        private Floor _floor;
+        private Decision _decisionMaker;
 
-        private Vector3Int[] _offsets =
-        {
-            Vector3Int.up,
-            Vector3Int.left,
-            Vector3Int.down,
-            Vector3Int.right
-        };
-
-        private Random _random;
 
         protected override void Awake()
         {
             base.Awake();
-            _random = new Random(seed);
-            _floor = FindObjectOfType<Floor>();
+            _decisionMaker = FindObjectOfType<Decision>();
             MovementEnded += EndTurn;
         }
 
         public override void OnTurn()
         {
             base.OnTurn();
-            // zombie will try to move in every direction before giving up
-            ShuffleOffsets();
-            if (Attack())
-                return;
-            if (Move())
-                return;
-            // do nothing
-            EndTurn();
+            _decisionMaker.AIDecision(this);   
         }
 
-        private bool Attack()
+        /*private bool Attack()
         {
             foreach (var offset in _offsets)
             {
@@ -75,6 +58,6 @@ namespace Entities
         private void ShuffleOffsets()
         {
             _offsets = _offsets.OrderBy(x => _random.Next()).ToArray();
-        }
+        }*/
     }
 }

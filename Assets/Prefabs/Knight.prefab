@@ -27,6 +27,7 @@ MonoBehaviour:
   maxHealth: 1
   damage: 1
   healthText: {fileID: 1379743975678444741}
+  EntityType: 4
   target: {fileID: 0}
 --- !u!1001 &4806467093121343750
 PrefabInstance:

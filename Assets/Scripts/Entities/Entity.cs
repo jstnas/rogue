@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 namespace Entities
 {
+    
+
     public delegate void TurnEnded();
 
     public delegate void MovementEnded();
@@ -11,6 +13,17 @@ namespace Entities
 
     public class Entity : MonoBehaviour
     {
+        public enum entityType
+        { 
+            Player,
+            Zombie,
+            Healer,
+            Range,
+            Knight,
+            Tank
+        }
+
+
         private const float DistanceThreshold = 0.1f;
         private const float Speed = 16f;
         [SerializeField] private int maxHealth;
@@ -24,11 +37,14 @@ namespace Entities
         public EntityDied EntityDied;
         protected MovementEnded MovementEnded;
         public TurnEnded TurnEnded;
+        public entityType EntityType;
+        
 
         protected virtual void Awake()
         {
             EntityManager = FindObjectOfType<EntityManager>();
             _grid = FindObjectOfType<Grid>();
+            
             _health = maxHealth;
             healthText.text = _health.ToString();
             _targetPosition = transform.position;
@@ -42,21 +58,25 @@ namespace Entities
         public virtual void OnTurn()
         {
             print($"<color=yellow>{name}</color> at {GetCellPosition()} is starting their turn");
+            Debug.Log("onturn called");
         }
 
-        protected void EndTurn()
+        public void EndTurn()
         {
             TurnEnded?.Invoke();
         }
 
-        protected void Attack(Entity target)
+        public void Attack(Entity target)
         {
             print($"<color=red>{name}</color> is attacking <color=yellow>{target}</color>");
             target.ChangeHealth(-damage);
         }
 
+        
+
         private void UpdatePosition()
         {
+            
             // skip if not moving
             if (!_moving)
                 return;
@@ -77,7 +97,7 @@ namespace Entities
             transform.position = position;
         }
 
-        protected void MoveTo(Vector3Int cellPosition)
+        public void MoveTo(Vector3Int cellPosition)
         {
             _targetPosition = _grid.CellToWorld(cellPosition) + _grid.cellSize * 0.5f;
             _moving = true;
@@ -104,6 +124,30 @@ namespace Entities
         public Vector3Int GetCellPosition()
         {
             return _grid.WorldToCell(_targetPosition);
+        }
+
+        public bool NeedsHealing(Entity healer)
+        {
+            if(_health < maxHealth)
+            {
+                print($"<color=blue>{healer.name}</color> is healing <color=yellow>{name}</color>");
+                _health = maxHealth;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public int GetHealth()
+        {
+            return _health;
+        }
+
+        public int GetMaxHealth()
+        {
+            return maxHealth;
         }
     }
 }

@@ -48,5 +48,9 @@ namespace Entities
             _currentEntity %= _entities.Count;
             _entities[_currentEntity].OnTurn();
         }
+        public List<Entity> GetEntities()
+        {
+            return _entities;
+        }
     }
 }
