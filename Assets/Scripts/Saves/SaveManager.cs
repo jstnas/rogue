@@ -6,7 +6,7 @@ namespace Saves
     public class SaveManager : MonoBehaviour
     {
         private static string _saveFile;
-        public static SaveState ActiveState;
+        public static readonly SaveState ActiveState = new SaveState();
 
         private void Awake()
         {
@@ -24,12 +24,12 @@ namespace Saves
 
         private static void LoadState()
         {
-            // initialise save state if save file doesn't exist
+            // make new save file if one doesn't exist
             if (!File.Exists(_saveFile))
             {
                 print($"save file at: {_saveFile} doesn't exist");
                 print("initialising save state");
-                ActiveState = new SaveState();
+                SaveState();
                 return;
             }
             // otherwise load the save file

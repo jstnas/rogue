@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Saves
 {
@@ -7,7 +8,7 @@ namespace Saves
     public class SaveState
     {
         // TODO: keep track of turns
-        private List<string> unlockedLevels;
+        [SerializeField] private List<string> unlockedLevels;
 
         public SaveState()
         {
