@@ -1,3 +1,4 @@
+using Saves;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,8 @@ namespace Ui
         private const string MainMenu = "Scenes/MainMenu";
         [SerializeField] private GameObject lostPanel;
         [SerializeField] private GameObject wonPanel;
+        [SerializeField] private LevelManager levelManager;
         [SerializeField] private Text turnText;
-        [SerializeField] private string nextLevel;
 
         private void Start()
         {
@@ -21,7 +22,11 @@ namespace Ui
         public void Display(bool won)
         {
             if (won)
+            {
+                var nextLevel = levelManager.GetNextLevel();
+                SaveManager.ActiveState.UnlockLevel(nextLevel);
                 wonPanel.SetActive(true);
+            }
             else
                 lostPanel.SetActive(true);
         }
@@ -40,6 +45,7 @@ namespace Ui
         public void NextLevel()
         {
             // action for next level button
+            var nextLevel = levelManager.GetNextLevel();
             LevelLoader.LoadLevel(nextLevel);
         }
 
