@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using PathFinding.Maps;
 using Ui;
 using UnityEngine;
 
@@ -11,7 +10,6 @@ namespace Entities
     public class EntityManager : MonoBehaviour
     {
         [SerializeField] private GameOverPanel gameOverPanel;
-        [SerializeField] private Map[] maps;
         private readonly List<Entity> _entities = new List<Entity>();
         private int _currentEntity;
         private int _playerTurns; // number of turns the player has made
@@ -75,6 +73,31 @@ namespace Entities
                 if (entity.GetCellPosition() == cellPosition)
                     return entity;
             return null;
+        }
+
+        public List<Entity> GetEntities()
+        {
+            return _entities;
+        }
+
+        public Entity? GetClosestEntity(Vector3Int from, string tagName)
+        {
+            Entity? target = null;
+            var targetDistance = float.MaxValue;
+            foreach (var entity in _entities)
+            {
+                // skip entities of wrong tag
+                if (!entity.CompareTag(tagName))
+                    continue;
+                var distance = Vector3Int.Distance(from, entity.GetCellPosition());
+                // skip entities that are too far away
+                if (distance >= targetDistance)
+                    continue;
+                targetDistance = distance;
+                target = entity;
+            }
+
+            return target;
         }
 
         private void Stop()

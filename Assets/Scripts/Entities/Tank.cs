@@ -12,7 +12,7 @@ namespace Entities
         protected override void Awake()
         {
             base.Awake();
-            _path = FindObjectOfType<MeleeMap>();
+            _path = GetComponent<IPath>();
             _target = GameObject.FindWithTag("Player").GetComponent<Entity>();
             onMovementEnded.AddListener(EndTurn);
         }
@@ -20,8 +20,16 @@ namespace Entities
         public override void OnTurn()
         {
             base.OnTurn();
-            var path = _path.GetPath(GetCellPosition(), _target.GetCellPosition());
-            print(path);
+            Vector3Int? path = null;
+            // move towards healer if on low health
+            if (NeedsHealing())
+            {
+                var closestHealer = EntityManager.GetClosestEntity(GetCellPosition(), "Healer");
+                if (closestHealer != null)
+                    path = _path.GetPath(GetCellPosition(), closestHealer.GetCellPosition());
+            }
+            // move towards target otherwise
+            path ??= _path.GetPath(GetCellPosition(), _target.GetCellPosition());
             // don't move if not path found
             if (path == null)
             {

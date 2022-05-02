@@ -28,6 +28,29 @@ namespace PathFinding.Maps
             return targetTile;
         }
 
+        public Vector3Int? RunAway(Vector3Int from, Vector3Int enemy)
+        {
+            // pick the highest neighbour tile
+            Vector3Int? targetTile = null;
+            var targetWeight = -1;
+            // go through neighbour tiles
+            foreach (var offset in NeighbourOffsets)
+            {
+                var neighbourTile = from + offset;
+                // skip invalid tiles
+                if (!Tiles.ContainsKey(neighbourTile))
+                    continue;
+                var neighbourWeight = Tiles[neighbourTile];
+                // skip tiles that are more expensive
+                if (neighbourWeight <= targetWeight)
+                    continue;
+                targetWeight = neighbourWeight;
+                targetTile = neighbourTile;
+            }
+
+            return targetTile;
+        }
+
         public override void UpdateMap()
         {
             base.UpdateMap();

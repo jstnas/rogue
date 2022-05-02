@@ -59,6 +59,13 @@ namespace Entities
             target.ChangeHealth(-damage);
         }
 
+        protected void Heal(Entity target)
+        {
+            print($"<color=green>{name}</color> is healing <color=yellow>{target}</color>");
+            // damage controls how much healing is done
+            target.ChangeHealth(damage);
+        }
+
         private void UpdatePosition()
         {
             // skip if not moving
@@ -108,6 +115,11 @@ namespace Entities
         public Vector3Int GetCellPosition()
         {
             return _grid.WorldToCell(_targetPosition);
+        }
+
+        public bool NeedsHealing()
+        {
+            return _health < maxHealth;
         }
     }
 }

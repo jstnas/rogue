@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PathFinding
@@ -53,6 +54,11 @@ namespace PathFinding
             }
 
             return null;
+        }
+
+        public Vector3Int? RunAway(Vector3Int from, Vector3Int enemy)
+        {
+            throw new NotImplementedException();
         }
     }
 }
