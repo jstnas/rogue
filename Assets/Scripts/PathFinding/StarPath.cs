@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PathFinding
 {
-    public class StarPath : Path
+    public class StarPath : MonoBehaviour, IPath
     {
         private readonly Vector3Int[] _offsets = {Vector3Int.up, Vector3Int.left, Vector3Int.down, Vector3Int.right};
         private Floor _floor;
@@ -13,7 +13,7 @@ namespace PathFinding
             _floor = FindObjectOfType<Floor>();
         }
 
-        public override List<Vector3Int> GetPath(Vector3Int from, Vector3Int to)
+        public Vector3Int? GetPath(Vector3Int from, Vector3Int to)
         {
             // keeps track of cells that need to be visited
             var openList = new List<StarNode> {new StarNode(from, null, to)};
@@ -36,16 +36,13 @@ namespace PathFinding
                     // check if neighbour is the destination
                     if (neighbour == to)
                     {
-                        var path = new List<Vector3Int>();
                         var node = new StarNode(neighbour, currentNode, to);
-                        while (node.GetParent() != null)
+                        while (node.GetParent().GetParent() != null)
                         {
                             // print(node.GetPosition()); // DEBUG
-                            path.Insert(0, node.GetPosition());
                             node = node.GetParent();
                         }
-
-                        return path;
+                        return node.GetPosition();
                     }
 
                     // skip if neighbour cell can't be walked on, or it has already been checked

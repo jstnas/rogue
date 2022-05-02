@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using PathFinding;
 using Ui;
 using UnityEngine;
 
@@ -21,15 +22,21 @@ namespace Entities
             foreach (var entity in entities)
             {
                 _entities.Add(entity);
-                entity.TurnEnded += OnTurnEnded;
                 if (entity.CompareTag("Player"))
-                    entity.TurnEnded += TrackTurn;
+                    entity.TurnEnded += OnPlayerTurnEnded;
+                entity.TurnEnded += OnTurnEnded;
                 entity.EntityDied += OnEntityDeath;
             }
             EntitiesUpdated?.Invoke(_entities);
 
             // let the first entity take its turn
             _entities[0].OnTurn();
+        }
+
+        private void OnPlayerTurnEnded(Entity entity)
+        {
+            _playerTurns++;
+            FindObjectOfType<TankMap>().UpdateTiles(new List<Vector3Int> {entity.GetCellPosition()});
         }
 
         [CanBeNull]
@@ -62,16 +69,11 @@ namespace Entities
             }
         }
 
-        private void OnTurnEnded()
+        private void OnTurnEnded(Entity entity)
         {
             _currentEntity++;
             _currentEntity %= _entities.Count;
             _entities[_currentEntity].OnTurn();
-        }
-
-        private void TrackTurn()
-        {
-            _playerTurns++;
         }
 
         private void Stop()

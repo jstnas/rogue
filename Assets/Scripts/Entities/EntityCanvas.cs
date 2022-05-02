@@ -8,7 +8,7 @@ namespace Entities
     {
         private readonly List<Canvas> _canvasList = new List<Canvas>();
         [SerializeField] private InputActionReference showAction;
-        private bool _show = false;
+        private bool _show;
 
         private void Awake()
         {
@@ -45,10 +45,10 @@ namespace Entities
 
         private void OnShow(InputAction.CallbackContext obj)
         {
-            _show = obj.performed;  // hold
+            // _show = obj.performed;  // hold
             // toggle
-            // if (obj.performed)
-            //     _show = !_show;
+            if (obj.performed)
+                _show = !_show;
             // enable canvases
             foreach (var canvas in _canvasList)
             {

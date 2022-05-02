@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Entities
 {
-    public delegate void TurnEnded();
+    public delegate void TurnEnded(Entity entity);
 
     public delegate void MovementEnded();
 
@@ -46,7 +46,7 @@ namespace Entities
 
         protected void EndTurn()
         {
-            TurnEnded?.Invoke();
+            TurnEnded?.Invoke(this);
         }
 
         protected void Attack(Entity target)

@@ -3,14 +3,15 @@ using UnityEngine;
 
 namespace Entities
 {
-    public class Knight : Entity
+    public class Tank : Entity
     {
+        
         private Entity _target;
         private IPath _path;
         protected override void Awake()
         {
             base.Awake();
-            _path = GetComponent<IPath>();
+            _path = FindObjectOfType<TankMap>();
             _target = GameObject.FindWithTag("Player").GetComponent<Entity>();
             MovementEnded += EndTurn;
         }
