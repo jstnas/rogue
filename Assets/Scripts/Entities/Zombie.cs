@@ -24,7 +24,7 @@ namespace Entities
             base.Awake();
             _random = new Random(seed);
             _floor = FindObjectOfType<Floor>();
-            MovementEnded += EndTurn;
+            onMovementEnded.AddListener(EndTurn);
         }
 
         public override void OnTurn()

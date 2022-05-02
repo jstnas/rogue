@@ -1,4 +1,5 @@
 ﻿using PathFinding;
+using PathFinding.Maps;
 using UnityEngine;
 
 namespace Entities
@@ -11,9 +12,9 @@ namespace Entities
         protected override void Awake()
         {
             base.Awake();
-            _path = FindObjectOfType<TankMap>();
+            _path = FindObjectOfType<MeleeMap>();
             _target = GameObject.FindWithTag("Player").GetComponent<Entity>();
-            MovementEnded += EndTurn;
+            onMovementEnded.AddListener(EndTurn);
         }
 
         public override void OnTurn()

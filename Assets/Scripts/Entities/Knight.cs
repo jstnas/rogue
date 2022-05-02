@@ -12,7 +12,7 @@ namespace Entities
             base.Awake();
             _path = GetComponent<IPath>();
             _target = GameObject.FindWithTag("Player").GetComponent<Entity>();
-            MovementEnded += EndTurn;
+            onMovementEnded.AddListener(EndTurn);
         }
 
         public override void OnTurn()

@@ -1,29 +1,33 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Entities
 {
-    public delegate void TurnEnded(Entity entity);
-
-    public delegate void MovementEnded();
-
-    public delegate void EntityDied(Entity entity);
+    [Serializable]
+    public class EntityEvent : UnityEvent<Entity>
+    {
+    }
 
     public class Entity : MonoBehaviour
     {
         private const float DistanceThreshold = 0.1f;
         private const float Speed = 16f;
+
+        public EntityEvent onTurnEnded;
+        public EntityEvent onEntityDied;
+        public UnityEvent onMovementEnded;
         [SerializeField] private int maxHealth;
         [SerializeField] private int damage;
         [SerializeField] private Text healthText;
-        protected EntityManager EntityManager;
+
         private Grid _grid;
         private int _health;
         private bool _moving;
         private Vector3 _targetPosition;
-        public EntityDied EntityDied;
-        protected MovementEnded MovementEnded;
-        public TurnEnded TurnEnded;
+
+        protected EntityManager EntityManager;
 
         protected virtual void Awake()
         {
@@ -46,7 +50,7 @@ namespace Entities
 
         protected void EndTurn()
         {
-            TurnEnded?.Invoke(this);
+            onTurnEnded.Invoke(this);
         }
 
         protected void Attack(Entity target)
@@ -70,7 +74,7 @@ namespace Entities
                 print($"<color=lime>{name}</color> at {GetCellPosition()} has finished moving");
                 position = _targetPosition;
                 _moving = false;
-                MovementEnded?.Invoke();
+                onMovementEnded.Invoke();
             }
 
             // update position
@@ -96,7 +100,7 @@ namespace Entities
         private void Die()
         {
             print($"<color=yellow>{name}</color> has died");
-            EntityDied?.Invoke(this);
+            onEntityDied.Invoke(this);
             // destroy self
             Destroy(gameObject);
         }

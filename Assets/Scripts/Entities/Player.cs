@@ -19,7 +19,7 @@ namespace Entities
             base.Awake();
             moveAction.action.performed += OnMove;
             _floor = FindObjectOfType<Floor>();
-            MovementEnded += EndTurn;
+            onMovementEnded.AddListener(EndTurn);
         }
 
         protected override void Update()
